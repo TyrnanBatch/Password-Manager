@@ -11,4 +11,9 @@ Noun = linecache.getline('source.txt',randNoun)
 Verb = linecache.getline('source.txt',randVerb)
 Adverb = linecache.getline('source.txt',randAdverb)
 
-print("password: " + Adjective + Noun + Verb + Adverb)
+password = str(Adjective) + str(Noun) + str(Verb) + str(Adverb) #puts string to together
+password = str.join(" ", password.splitlines()) #puts it all on the same line
+password = password.replace(" ", "") #takes all white space out
+password = password.lower() #converts all to lower case
+
+print("password: " + str(password))
