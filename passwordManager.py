@@ -23,19 +23,19 @@ def randPwd():
 
 inputVar = input("What do you want: ")
 
-if inputVar == "password":
+if inputVar == "random password": #genorates random password
     print(randPwd())
 
-if inputVar == "new password":
-    newName = input("Name: ")
-    newPwd = input("Password: ")
+if inputVar == "new password": #adds new password
+    newName = input("Name: ") #lets you set name
+    newPwd = input("Password: ") #lets you set passwors
     if newPwd == "random":
         newPwd = randPwd()
     file = open("passwordstore.txt", "a")
     file.write("\nNAME: " + newName + " --- PASSWORD: " + newPwd + "\n")
     file.close()
 
-elif inputVar == "clear":
+elif inputVar == "clear": #clears all passwords
     yorn = input("Are you sure you want to do this, it cannot be undone: Y or N: ")
     if yorn == "Y" or yorn == "y":
         file = open("passwordstore.txt", "w")
@@ -43,14 +43,14 @@ elif inputVar == "clear":
         file.close()
         print("cleard")
 
-elif inputVar == "quit":
+elif inputVar == "quit": #quits program
     quit()
-elif inputVar == "print all":
+elif inputVar == "print all": #prints all
     file = open("passwordstore.txt", "r")
     print(file.read())
     file.close()
 
-with open('passwordstore.txt', 'r') as searchfile:
+with open('passwordstore.txt', 'r') as searchfile: #searches file for name
     for line in searchfile:
         if inputVar in line: #searches for input
             print("line")
