@@ -21,14 +21,14 @@ def randPwd():
     
     return password
 
-inputVar = raw_input("What do you want: ")
+inputVar = input("What do you want: ")
 
 if inputVar == "password":
     print(randPwd())
 
 if inputVar == "new password":
-    newName = raw_input("Name: ")
-    newPwd = raw_input("Password: ")
+    newName = input("Name: ")
+    newPwd = input("Password: ")
     if newPwd == "random":
         newPwd = randPwd()
     file = open("passwordstore.txt", "a")
@@ -36,7 +36,7 @@ if inputVar == "new password":
     file.close()
 
 elif inputVar == "clear":
-    yorn = raw_input("Are you sure you want to do this, it cannot be undone: Y or N: ")
+    yorn = input("Are you sure you want to do this, it cannot be undone: Y or N: ")
     if yorn == "Y" or yorn == "y":
         file = open("passwordstore.txt", "w")
         file.write("")
@@ -53,7 +53,7 @@ elif inputVar == "print all":
 with open('passwordstore.txt', 'r') as searchfile:
     for line in searchfile:
         if inputVar in line: #searches for input
-            print line
+            print("line")
 
 
 
