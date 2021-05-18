@@ -1,2 +1,2 @@
 # passwordGenerator
-randomly generates a four letter password that should grammatically make scence
+stores passwords really insecurely (for now)
