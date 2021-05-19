@@ -2,6 +2,7 @@ import linecache
 import random
 import os
 import sys
+import hashlib
 
 def randPwd():
     randAdj = random.randint(2 , 229)
@@ -21,20 +22,40 @@ def randPwd():
     
     return password
 
+file = open("masterpassword.txt","r")
+masterPassword = file.read()
+file.close()
+if masterPassword == "": #no master password
+    masterPassword = input("Please input a new master password: ") #input master password
+    masterPassword = hashlib.md5(masterPassword.encode())
+    masterPassword = masterPassword.hexdigest() #hash it
+    file = open("masterpassword.txt","a")
+    file.write("masterpassword: " + masterPassword) #saves it ti masterpassword.txt
+    file.close()
+else: #if somthing in masterpassword.txt
+    check = input("Please input master password: ") #input master password
+    throwaway, masterPassword = masterPassword.split(" ") #takes the hash from pasword.txt
+    check = hashlib.md5(check.encode())
+    check = check.hexdigest() #hashes check
+    while str(check) != str(masterPassword): #if password is wrong
+        check = input("Please input master password: ") # askes again
+        check = hashlib.md5(check.encode())
+        check = check.hexdigest() #hashes the new input 
+        if str(check) == str(masterPassword): #if password is correct contue
+            continue
+
 inputVar = input("What do you want: ")
 
-if inputVar == "random password": #genorates random password
-    print(randPwd())
+#what do you want
 
 if inputVar == "new password": #adds new password
     newName = input("Name: ") #lets you set name
-    newPwd = input("Password: ") #lets you set passwors
+    newPwd = input("Password: ") #lets you set password
     if newPwd == "random":
         newPwd = randPwd()
     file = open("passwordstore.txt", "a")
-    file.write("\nNAME: " + newName + " --- PASSWORD: " + newPwd + "\n")
+    file.write("\nNAME: " + str(newName) + " --- PASSWORD: " + str(newPwd) + "\n")
     file.close()
-
 elif inputVar == "clear": #clears all passwords
     yorn = input("Are you sure you want to do this, it cannot be undone: Y or N: ")
     if yorn == "Y" or yorn == "y":
@@ -42,18 +63,19 @@ elif inputVar == "clear": #clears all passwords
         file.write("")
         file.close()
         print("cleard")
-
 elif inputVar == "quit": #quits program
     quit()
 elif inputVar == "print all": #prints all
     file = open("passwordstore.txt", "r")
     print(file.read())
     file.close()
+elif inputVar == "random password": #genorates random password
+    print(randPwd())
 
 with open('passwordstore.txt', 'r') as searchfile: #searches file for name
     for line in searchfile:
         if inputVar in line: #searches for input
-            print("line")
+            print(line)
 
 
 
