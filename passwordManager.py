@@ -3,6 +3,10 @@ import random
 import os
 import sys
 import hashlib
+from cryptography.fernet import Fernet
+
+key = b'3rjnDPiSE5NLPBInYz1A8qw1eRbZncJLMcO5imPaUZU=' # THIS IS TEMPORERY
+cipherKey = Fernet(key)
 
 def randPwd():
     randAdj = random.randint(2 , 229)
@@ -56,8 +60,9 @@ while True:
         newPwd = input("Password: ") #lets you set password
         if newPwd == "random":
             newPwd = randPwd()
+        newPwdEnc = newPwd.encrypt(b"A really secret message. Not for prying eyes.") # encrypts
         file = open("passwordstore.txt", "a")
-        file.write("\nNAME: " + str(newName) + " --- PASSWORD: " + str(newPwd) + "\n")
+        file.write("\nNAME: " + str(newName) + " --- PASSWORD: " + str(newPwdEnc) + "\n")
         file.close()
 
     #clears all password
@@ -69,11 +74,12 @@ while True:
             file.close()
             print("cleard")
 
-    #clears all passwords
+    #quits program
     elif inputVar == "quit": 
+        print("quitting...")
         quit()
 
-    #quits program
+    #prints all
     elif inputVar == "print all": #prints all
         file = open("passwordstore.txt", "r")
         print(file.read())
@@ -82,9 +88,33 @@ while True:
     #genorates random password
     elif inputVar == "random password": 
         print(randPwd())
-
+    
+    # helps you
+    elif inputVar == "help":
+        print("   -new password: lets you add new password")
+        print("   -random password: generates random password (if you set your password world to random it will generate a random one in its place)")
+        print("   -print all: prints all passwords")
+        print("   -find password: searches for a file of your choice")
+        print("   -quit: quits program")
+    
     #searches file for name
-    with open('passwordstore.txt', 'r') as searchfile: 
-        for line in searchfile:
-            if inputVar in line: #searches for input
-                print(line)
+    elif inputVar == "find password":
+        findName = input("what is the password named: ")
+        with open('passwordstore.txt', 'r') as searchfile: 
+            for line in searchfile:
+                if findName in line: #searches for input
+                    print(" ")
+                    line = cipherKey.decrypt(line) # decrypts
+                    print(line)
+    
+    elif inputVar == "delete password":
+         delete = input("what is the name of the password you want to delete: ")
+         with open('passwordstore.txt', 'r') as searchfile: 
+            for line in searchfile:
+                if delete in line: #searches for input
+                    file = open("passwordstore.txt.txt", "w")
+                    lines = delete
+                    for line in lines:
+                        if line.strip("\n") != "line2":
+                            file.write(line)
+                        file.close()
