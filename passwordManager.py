@@ -60,7 +60,7 @@ while True:
         newPwd = input("Password: ") #lets you set password
         if newPwd == "random":
             newPwd = randPwd()
-        newPwdEnc = newPwd.encrypt(b"A really secret message. Not for prying eyes.") # encrypts
+        newPwdEnc = cipherKey.encrypt(b"A really secret message. Not for prying eyes.") # encrypts
         file = open("passwordstore.txt", "a")
         file.write("\nNAME: " + str(newName) + " --- PASSWORD: " + str(newPwdEnc) + "\n")
         file.close()
@@ -104,6 +104,7 @@ while True:
             for line in searchfile:
                 if findName in line: #searches for input
                     print(" ")
+                    throwaway1, throwaway2, line = line.split(": ")
                     line = cipherKey.decrypt(line) # decrypts
                     print(line)
     
