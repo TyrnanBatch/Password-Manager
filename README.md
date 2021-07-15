@@ -1,2 +1,2 @@
 # passwordManager
-stores passwords really insecurely (for now)
+A password manager that stores your passowrds with encryption and hashes the master password
