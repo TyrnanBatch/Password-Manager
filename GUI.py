@@ -1,4 +1,5 @@
 import tkinter as tk
+import time
 
 root = tk.Tk()
 root.configure(bg = 'grey')
@@ -7,13 +8,16 @@ root.title('Password Manager')
 from masterpassword import master_password_func
 
 show_text = '*'
+submit_button_colour = 'black'
 
 def master_password_read():
     result = master_password_input.get()
     if master_password_func(result):
-        print('Success')
+        root.destroy()
     else:
-        print('Fail')
+        submit_button_colour = 'red'
+        time.sleep(0.3)
+        submit_button_colour = 'black'
 
 def show_button():
     global show_text
@@ -21,7 +25,9 @@ def show_button():
         show_text = ''
     elif show_text ==  '':
         show_text = '*'
-    print(show_text)
+    print(master_password_input)
+    root.update_idletasks()
+    root.update()
 
 try:
     file = open("storage/masterpassword.txt","r")
@@ -37,7 +43,7 @@ request.grid(row = 1, column = 0, columnspan = 2)
 master_password_input = tk.Entry(root, justify = 'center', width = 30, font = 'Times 40 bold italic', bd = 5, show = show_text)
 master_password_input.grid(row = 2, column = 0)
 
-show_button = tk.Button(root, height = 2, width = 12, bd = 10, text = 'show', font = 'Times 16 bold italic', command = show_button)
+show_button = tk.Button(root, fg = submit_button_colour, height = 2, width = 12, bd = 10, text = 'show', font = 'Times 16 bold italic', command = show_button)
 show_button.grid(row = 2, column = 1)
 
 master_password_submit = tk.Button(root, height = 2, width = 42, bd = 10, text = 'Submit', font = 'Times 30 bold italic', command = master_password_read)
