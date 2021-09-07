@@ -1,6 +1,6 @@
 def master_password_entry():
     import tkinter as tk
-    import time
+    import hashlib
 
     from masterpassword import master_password_func
     from GUI import password_manager_home
@@ -10,36 +10,59 @@ def master_password_entry():
     root.title('Password Manager')
 
     def master_password_read():
-        result = master_password_input.get()
+        result = input.get()
         if master_password_func(result):
             root.destroy()
             password_manager_home()
         else:
             print('INCORRECT')
 
-    try:
-        file = open("storage/masterpassword.txt", "r")
-        master_password = file.read()
-        file.close()
-        request_text = 'Enter new Master Password: '
-    except:
-        request_text = 'Enter Master Password: '
+    def master_password_reset_button():
+        master_password_reset_button_text = master_password_reset.cget('text')
 
+        if master_password_reset_button_text == 'Reset Master Password':
+            request_text.set('Enter new Master Password: ')
+            master_password_reset_text.set('Submit Master Password')
+        
+        elif master_password_reset_button_text == 'Submit Master Password':
+            file = open('storage/masterpasssword.txt', 'w')
+            masterpassword = input.get()
+            masterpassword = hashlib.md5(masterpassword).hexdigest()
+            file.write(masterpassword)
+            file.close()
+            request_text.set('Enter Master Password: ')
+            master_password_reset_text.set('Reset Master Password')
+    
+    request_text = tk.StringVar()
+    request_text.set('')
     request = tk.Label(root, font='Times 20 bold italic',
-                       width=21, height=2, text=request_text)
+                       width=21, height=2, textvariable=request_text)
     request.grid(row=1, column=1,)
 
-    master_password_input = tk.Entry(
+    try:
+        open('storage/masterpassword.txt', 'r')
+        request_text.set('Enter new Master Password: ')
+    except:
+        file = open('storage/masterpassword.txt', 'r')
+        master_password = file.read()
+        file.close()
+        if master_password == '':
+            request_text.set('Enter Master Password: ')
+
+    input = tk.Entry(
         root, justify='center', width=25, font='Times 40 bold italic', bd=5, show='*')
-    master_password_input.grid(row=1, column=2)
+    input.grid(row=1, column=2)
 
     master_password_submit = tk.Button(
         root, height=1, width=44, bd=10, text='SUBMIT', font='Times 30 bold italic', command=master_password_read)
     master_password_submit.grid(row=2, column=1, columnspan=2)
 
+    master_password_reset_text = tk.StringVar()
+    master_password_reset_text.set('Reset Master Password')
     master_password_reset = tk.Button(
-        root, height=6, text='Reset Master Password', font='Times 15 bold italic', bd=10)
-    master_password_reset.grid(row=1, column=3, rowspan=2)
+        root, height=6, textvariable=master_password_reset_text, font='Times 15 bold italic', bd=10, command=master_password_reset_button)
+    master_password_reset.grid(
+        row=1, column=3, rowspan=2)
 
     root.mainloop()
 
@@ -98,8 +121,8 @@ def password_manager_home():
         json_file.close()
         count = 0
         for search in json_file_read:
-            if search["name"] == password_change_text[1]["name"]: # Issue here
-                json_file_read[1]["password"] = password_change_text
+            if search["name"] == password_change_text:  # Issue here
+                json_file_read[count]["password"] = password_change_text
                 json_file = open('storage/passwordstore.json', 'w')
                 json_file.write(json.dumps(json_file_read))
                 json_file.close()
@@ -157,14 +180,3 @@ def password_manager_home():
     #### SEARCH FUNCTION ENDS ####
 
     #### NEW PASSWORD FUNCTION BEGGINS ####
-
-
-def password_manager_gui():
-
-    import tkinter as tk
-
-    from functions import quit_func
-
-    root = tk.Tk()
-
-    quit_button = tk.Button(root, command=quit_func).grid(row=1, column=1)
