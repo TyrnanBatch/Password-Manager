@@ -23,25 +23,25 @@ def master_password_entry():
         if master_password_reset_button_text == 'Reset Master Password':
             request_text.set('Enter new Master Password: ')
             master_password_reset_text.set('Submit Master Password')
-        
+
         elif master_password_reset_button_text == 'Submit Master Password':
-            file = open('storage/masterpasssword.txt', 'w')
+            file = open('storage/masterpassword.txt', 'w')
             masterpassword = input.get()
-            masterpassword = hashlib.md5(masterpassword).hexdigest()
+            masterpassword = hashlib.md5(masterpassword.encode()).hexdigest()
             file.write(masterpassword)
             file.close()
             request_text.set('Enter Master Password: ')
             master_password_reset_text.set('Reset Master Password')
-    
+
     request_text = tk.StringVar()
-    request_text.set('')
+    request_text.set('Enter Master Password')
     request = tk.Label(root, font='Times 20 bold italic',
                        width=21, height=2, textvariable=request_text)
     request.grid(row=1, column=1,)
 
     try:
         open('storage/masterpassword.txt', 'r')
-        request_text.set('Enter new Master Password: ')
+        request_text.set('Enter Master Password: ')
     except:
         file = open('storage/masterpassword.txt', 'r')
         master_password = file.read()
@@ -73,9 +73,6 @@ def password_manager_home():
 
     root = tk.Tk()
 
-    name_result = 'Name: '
-    password_result = 'Password: '
-
     #### SEARCH FUNCTION BEGGINS ####
 
     name_change_entry = tk.Entry(root, font='Times 20')
@@ -98,13 +95,6 @@ def password_manager_home():
             name_result.grid_forget()
             name_change_entry.grid(row=2, column=2)
 
-    def password_change():
-        password_label_text = password_label.cget('text')
-        if password_label_text != '':
-            password_result.grid_forget()
-            password_change_entry.grid(row=3, column=2)
-
-    def name_submit():
         password_search = name_result_text
         name_change_text = name_change_entry.get()
         password_change_text = password_change_entry.get()
@@ -112,24 +102,33 @@ def password_manager_home():
         name_change_entry.grid_forget()
         name_result.grid(row=2, column=2)
 
-    def password_submit():
-        password_change_text = password_change_entry.get()
-        password_result_text.set(password_change_text)
-        password_change_entry.grid_forget()
-        json_file = open('storage/passwordstore.json', 'r')
-        json_file_read = json.load(json_file)
-        json_file.close()
-        count = 0
-        for search in json_file_read:
-            if search["name"] == password_change_text:  # Issue here
-                json_file_read[count]["password"] = password_change_text
-                json_file = open('storage/passwordstore.json', 'w')
-                json_file.write(json.dumps(json_file_read))
-                json_file.close()
-                print('password changed')
-            count += 1
+    def password_change():
+        local_change_password_text = change_password_text.get()
+        if local_change_password_text == 'CHANGE':
+            password_result.grid_forget()
+            password_change_entry.grid(row=3, column=2)
+            change_password_text.set('SUBMIT')
 
-        password_result.grid(row=3, column=2)
+
+        elif local_change_password_text == 'SUBMIT':
+            print(local_change_password_text)
+            password_result_text.set(password_change_entry.get())
+            password_change_entry.grid_forget()
+            json_file = open('storage/passwordstore.json', 'r')
+            json_file_read = json.load(json_file)
+            json_file.close()
+            count = 0
+            for search in json_file_read:
+                if search["name"] == search_box.get():
+                    json_file_read[count]["password"] = password_change_entry.get()
+                    json_file = open('storage/passwordstore.json', 'w')
+                    json_file.write(json.dumps(json_file_read))
+                    json_file.close()
+                    print('password changed')
+                    change_password_text.set('CHANGE')
+                count += 1
+
+            password_result.grid(row=3, column=2)
 
     #### SEARCH FUNCTION BEGGINS ####
 
@@ -140,22 +139,18 @@ def password_manager_home():
                               font='Times 15', width=10, command=password_search_button)
     search_button.grid(row=1, column=5, columnspan=2)
 
-    change_name_button = tk.Button(root, height=1, bd=3, text='CHANGE',
+    change_name_text = tk.StringVar()
+    change_name_text.set('CHANGE')
+    change_name_button = tk.Button(root, width=16, height=1, bd=3, text='CHANGE',
                                    font='Times 10', command=name_change)
     change_name_button.grid(row=2, column=5)
 
-    submit_name_button = tk.Button(root, height=1, bd=3, text='SUBMIT',
-                                   font='Times 10', comman=name_submit)
-    submit_name_button.grid(row=2, column=6)
-
-    change_password_button = tk.Button(root, heigh=1, bd=3, text='CHANGE',
+    change_password_text = tk.StringVar()
+    change_password_text.set('CHANGE')
+    change_password_button = tk.Button(root, width=16, heigh=1, bd=3, textvariable=change_password_text,
                                        font='Times 10', command=password_change)
     change_password_button.grid(row=3, column=5)
-
-    submit_password_button = tk.Button(root, heigh=1, bd=3, text='SUBMIT',
-                                       font='Times 10', command=password_submit)
-    submit_password_button.grid(row=3, column=6)
-
+    
     search_text = tk.Label(root, text='Search: ', font='Times 20')
     search_text.grid(row=1, column=1)
 
